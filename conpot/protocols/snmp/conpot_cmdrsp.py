@@ -32,6 +32,7 @@ class conpot_extension(object):
 
     def log(self, version, msg_type, addr, req_varBinds, res_varBinds=None):
         session = conpot_core.get_session('snmp', addr[0], addr[1])
+        session.set_server_port(161)
         req_oid = req_varBinds[0][0]
         req_val = req_varBinds[0][1]
         event_type = 'SNMPv{0} {1}'.format(version, msg_type)

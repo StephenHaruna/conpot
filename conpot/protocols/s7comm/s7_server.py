@@ -40,6 +40,7 @@ class S7Server(object):
         self.timeout = 5
         self.ssl_lists = {}
         self.server = None
+        self.server_port = 0
         S7.ssl_lists = self.ssl_lists
 
         dom = etree.parse(template)
@@ -61,6 +62,7 @@ class S7Server(object):
     def handle(self, sock, address):
         sock.settimeout(self.timeout)
         session = conpot_core.get_session('s7comm', address[0], address[1])
+        session.set_server_port(self.server_port)
 
         self.start_time = time.time()
         logger.info('New S7 connection from {0}:{1}. ({2})'.format(address[0], address[1], session.id))
@@ -188,6 +190,7 @@ class S7Server(object):
             logger.info('Exception caught {0}, remote: {1}. ({2})'.format(e, address[0], session.id))
 
     def start(self, host, port):
+        self.server_port = port
         connection = (host, port)
         self.server = StreamServer(connection, self.handle)
         logger.info('S7Comm server started on: {0}'.format(connection))

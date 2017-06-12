@@ -37,6 +37,7 @@ class AttackSession(object):
         self.public_ip = None
         self.data = dict()
         self._ended = False
+        self.server_port = 0
 
     def _dump_event(self, event_data):
         data = {
@@ -45,6 +46,7 @@ class AttackSession(object):
             "data_type": self.protocol,
             "timestamp": self.timestamp,
             "public_ip": self.public_ip,
+            'server_port' : self.server_port,
             "data": event_data
         }
         return data
@@ -65,9 +67,13 @@ class AttackSession(object):
             "data_type": self.protocol,
             "timestamp": self.timestamp,
             "public_ip": self.public_ip,
+            'server_port' : self.server_port,
             "data": self.data
         }
         return data
+
+    def set_server_port(self, p):
+        self.server_port = p
 
     def set_ended(self):
         self._ended = True

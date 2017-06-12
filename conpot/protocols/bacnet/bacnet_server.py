@@ -36,6 +36,7 @@ logger = logging.getLogger(__name__)
 
 class BacnetServer(object):
     def __init__(self, template, template_directory, args):
+        self.server_port = 0
         self.dom = etree.parse(template)
         databus = conpot_core.get_databus()
         device_info_root = self.dom.xpath('//bacnet/device_info')[0]
@@ -66,6 +67,7 @@ class BacnetServer(object):
 
     def handle(self, data, address):
         session = conpot_core.get_session('bacnet', address[0], address[1])
+        session.set_server_port(self.server_port)
         logger.info('New Bacnet connection from %s:%d. (%s)', address[0], address[1], session.id)
         session.add_event({'type': 'NEW_CONNECTION'})
         # I'm not sure if gevent DatagramServer handles issues where the
@@ -85,6 +87,7 @@ class BacnetServer(object):
         logger.info('Bacnet client disconnected %s:%d. (%s)', address[0], address[1], session.id)
 
     def start(self, host, port):
+        self.server_port = port
         connection = (host, port)
         self.server = DatagramServer(connection, self.handle)
         # start to init the socket

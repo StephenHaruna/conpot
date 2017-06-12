@@ -37,6 +37,7 @@ AST_ERROR = "9999FF1B\n"
 class GuardianASTServer(object):
     def __init__(self, template, template_directory, args):
         self.server = None
+        self.server_port = 0
         self.databus = conpot_core.get_databus()
         # dom = etree.parse(template)
         self.fill_offset_time = datetime.datetime.utcnow()
@@ -44,6 +45,7 @@ class GuardianASTServer(object):
 
     def handle(self, sock, addr):
         session = conpot_core.get_session('guardian_ast', addr[0], addr[1])
+        session.set_server_port(self.server_port)
         logger.info('New GuardianAST connection from %s:%d. (%s)', addr[0], addr[1], session.id)
         session.add_event({'type': 'NEW_CONNECTION'})
         current_time = datetime.datetime.utcnow()
@@ -297,6 +299,7 @@ class GuardianASTServer(object):
         session.add_event({'type': 'CONNECTION_LOST'})
 
     def start(self, host, port):
+        self.server_port = port
         connection = (host, port)
         self.server = StreamServer(connection, self.handle)
         logger.info('GuardianAST server started on: {0}'.format(connection))
