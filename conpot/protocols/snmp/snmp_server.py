@@ -38,7 +38,6 @@ class SNMPServer(object):
         :param template:    path to the protocol specific xml configuration file (string).
         """
 
-        self.server_port = 0
         self.dom = etree.parse(template)
         self.cmd_responder = None
 
@@ -178,7 +177,6 @@ class SNMPServer(object):
             return '0;0'
 
     def start(self, host, port):
-        self.server_port = port
         self.cmd_responder = CommandResponder(host, port, self.compiled_mibs)
         self.xml_general_config(self.dom)
         self.xml_mib_config(self.dom, self.compiled_mibs, self.raw_mibs)
